@@ -27,6 +27,25 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 final class ChoiceTypeExtension extends AbstractTypeExtension
 {
+    public function buildForm(FormBuilderInterface $builder, array $options): void
+    {
+        if ($options['multiple'] && (true === ($options['sortable'] ?? false))) {
+            $builder->addEventListener(FormEvents::PRE_SUBMIT, static function (FormEvent $event) use ($options) {
+                /** @var PreSubmitEvent $event */
+                $form = $event->getForm();
+                $data = $event->getData();
+
+                if (!is_array($data) || count($data) !== 1) {
+                    return;
+                }
+
+                if (str_contains($data[0], ',')) {
+                    $event->setData(explode(',', $data[0]));
+                }
+            },1);
+        }
+    }
+    
     public function configureOptions(OptionsResolver $resolver): void
     {
         $optionalOptions = ['sortable'];
