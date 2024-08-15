@@ -329,17 +329,24 @@ This code manages the many-to-[one|many] association field popup
                             data: {_xml_http_request: true },
                             dataType: 'html',
                             type: 'POST',
-                            success: function(html) {
+                            success: function(html) { 
                                 jQuery('#field_container_{{ id }}').replaceWith(html);
                                 var newElement = jQuery('#{{ id }} [value="' + data.objectId + '"]');
-                                if (newElement.is("input")) {
-                                    newElement.attr('checked', 'checked');
+
+                                if (newElement.length) {
+                                    if (newElement.is("input")) {
+                                        newElement.attr('checked', 'checked');
+                                    } else {
+                                        newElement.attr('selected', 'selected');
+                                    }
                                 } else {
-                                    newElement.attr('selected', 'selected');
+                                    var selections = jQuery('#{{ id }}').val().split(',');
+                                    selections.push(data.objectId);
+                                    jQuery('#{{ id }}').val(selections.filter((val) => val.length > 0).join(','));
                                 }
 
                                 jQuery('#field_container_{{ id }}').trigger('sonata-admin-append-form-element');
-                            }
+                            } 
                         });
 
                     {% endif %}
