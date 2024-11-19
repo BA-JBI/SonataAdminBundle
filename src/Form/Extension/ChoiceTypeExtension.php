@@ -45,7 +45,7 @@ final class ChoiceTypeExtension extends AbstractTypeExtension
                 if (str_contains($data[0], ',')) {
                     $event->setData(explode(',', $data[0]));
                 }
-            },1);
+            }, 1);
         }
     }
     
